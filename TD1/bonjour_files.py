@@ -1,15 +1,4 @@
-"""
-Le premier prgramme en Python
-* utilisation des arguments de la lignne de commande
-* les listes et la fonction map
-* les threads
-* le logger
-
-@author Dragos STOICA
-@version 0.4
-@date 16.feb.2014
-"""
-
+#@IoanaDumitrache
 import sys, threading, logging, os
 
 class Bonjour(threading.Thread):
@@ -24,17 +13,34 @@ class Bonjour(threading.Thread):
    
 def utilisation():
     #Affichage mode d'utilisation
-    print """
-          Le programme doit etre appelle avec minimum 1 argument:
-          python bonjour_listes.py Dragos
-          """
+    mmeThread = []
+    mThread = []
+    mlleThread = []
+    file = open("Liste_Noms.txt", "r")
+    for i in file:
+        if i[0:2] == "M.":
+            mThread.append(Bonjour(i.strip(' \r\n')))
+        elif i[0:4] == "Mme.":
+            mmeThread.append(Bonjour(i.strip(' \r\n')))
+        else:
+            mlleThread.append(Bonjour(i.strip(' \r\n')))
+    for mlle in mlleThread:
+        mlle.start()
+        mlle.join()
+    for mme in mmeThread:
+        mme.start()
+        mme.join()
+    for m in mThread:
+        m.start()
+        m.join()
+        
 
-def main(argv=None):
+def main(argv = None):
     working_dir = os.path.dirname(os.path.abspath(__file__)) + os.path.sep
     #Configurez le logging pour ecrire dans un fichier texte
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+    logging.basicConfig(format = '%(asctime)s %(levelname)s %(message)s',
                         filename = working_dir + 'bonjour.log',
-                        level=logging.INFO)    
+                        level = logging.INFO)    
     logging.info("Main start")
     
     #La boucle principale
