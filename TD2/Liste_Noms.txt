@@ -1,6 +1,7 @@
 M. Fry 
 Mme. Leela 
-M. Bender 
+M. Bender
+Mlle. Sheida
 Mme. Amy Wong 
 M. Hermes Conrad 
 M. Hubert J. Farnsworth 
@@ -10,6 +11,7 @@ M. Zapp Brannigan
 M. Kif Kroker 
 M. Nibbler 
 Mme. Mom 
+Mlle. Piaf
 M. Scruffy 
 Mme. LaBarbara Conrad 
 M. Leo Wong 
