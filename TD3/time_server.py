@@ -1,35 +1,29 @@
 """
-Le premier serveur en Python
-* Serveur
 
-Ce serveur accepte 5 clients concurents et indique l'heure de serveur.
+@author Ioana Dumitrache
 
-@author Dragos STOICA
-@version 0.1
-@date 19.feb.2017
 """
-import socket
-import time
+import socket 
+import time 
 
-# create a socket object
-serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 
+host = socket.gethostname() 
+port = 6666 
 
-# get local machine name
-host = socket.gethostname()
+ 
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+serversocket.bind((host,port)) 
+serversocket.setblocking(0) 
 
-port = 6666
+ 
+print "Le serveur est allume" 
 
-# bind to the port
-serversocket.bind((host, port))
-
-# queue up to 5 requests
-serversocket.listen(5)
-
-while True:
-    # establish a connection
-    clientsocket,addr = serversocket.accept()
-
-    print("Connection de client avec IP %s" % str(addr))
-    currentTime = time.ctime(time.time()) + "\r\n"
-    clientsocket.send(currentTime.encode('ascii'))
-    clientsocket.close()
+ 
+while True: 
+    try: 
+        data, addr = serversocket.recvfrom(1024)  # primeste maxim 1024 bytes 
+             
+        print time.ctime(time.time()) + str(addr) + ": " + str(data) 
+    except: 
+        pass 
+    serversocket.close() 
