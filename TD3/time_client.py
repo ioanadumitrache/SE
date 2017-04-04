@@ -1,30 +1,60 @@
-"""
-Le premier client en Python
-* Client
+@author Ioana Dumitrache
 
-Ce client se connecte au Time serveur et recupere l'heure de serveur.
 
-@author Dragos STOICA
-@version 0.1
-@date 19.feb.2017
-"""
+import socket 
+import threading 
+ 
+ 
+tLock = threading.Lock() 
+closed = False 
+ 
+ 
+print "Introduissez 'esc' pour fermer le chat" 
+ 
+ 
+def receving(name, sock): 
+    while not closed: 
+        try: 
+            tLock.acquire() 
+            while True: 
+                data, addr = sock.recvfrom(1024) 
+        except: 
+            pass 
+        finally: 
+            tLock.release() 
 
-import socket
+ 
+host = socket.gethostname() 
+port = 6666 
+ 
+ 
+server = (host, port) 
 
-# create a socket object
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+s.connect((host, port)) 
+s.setblocking(0) 
 
-# get local machine name
-host = socket.gethostname()
+ 
+recvT = threading.Thread(target=receving, args=("RecvThread",s)) 
+recvT.start() 
+ 
+ 
+s.sendto("Cet usager est entre dans la conversation",server) 
+message = raw_input("Ecrivez: ") 
+ 
+ 
+while message != 'esc': 
+    if message != '': 
+        s.sendto(message, server) 
+    tLock.acquire() 
+    message = raw_input("Ecrivez: ") 
+    tLock.release() 
 
-port = 6666
+ 
+s.sendto("Cet usager s'est deconnecte",server) 
 
-# connection to hostname on the port.
-s.connect((host, port))
-
-# Receive no more than 1024 bytes
-tm = s.recv(1024)
-
-s.close()
-
-print("The time got from the server is %s" % tm.decode('ascii'))
+ 
+closed = True 
+recvT.join() 
+s.close() 
