@@ -59,8 +59,8 @@ class myHandler(BaseHTTPRequestHandler):
 				environ={'REQUEST_METHOD':'POST',
 		                 'CONTENT_TYPE':self.headers['Content-Type'],
 			})
-			crypt = caesar(form["le_texte"].value, 3)    #on cripte le message ecrit dans la page web
-			self.nsa_queue.put(crypt)		#on ajoute le message dan la file d'attente
+			crypt = caesar(form["le_texte"].value, 3)    #on crypte le message ecrit dans la page web
+			self.nsa_queue.put(crypt)		#on ajoute le message dans la file d'attente
 			print "Le texte en clair: %s" % form["le_texte"].value
 			self.send_response(200)
 			self.end_headers()
@@ -68,13 +68,13 @@ class myHandler(BaseHTTPRequestHandler):
 			return			
 
 		if self.path=="/decrypt":
-			le_texte = self.nsa_queue.get()			#on prend de la file d'attente le message decripte
-			decrypting = decrypt_caesar(le_texte, 3)	#on decripte le message initial
+			le_texte = self.nsa_queue.get()			#on prend de la file d'attente le message decrypte
+			decrypting = decrypt_caesar(le_texte, 3)	#on decrypte le message initial
 			print "Le texte en encode: %s" % le_texte
 			self.send_response(200)
 			self.end_headers()
-			self.wfile.write("Le texte intercepte: %s." % le_texte)	#l'affichage du texte cripte
-			self.wfile.write(" Le texte decode: %s" % decrypting)	#l'affichage du texte decripte
+			self.wfile.write("Le texte intercepte: %s." % le_texte)	#l'affichage du texte crypte
+			self.wfile.write(" Le texte decode: %s" % decrypting)	#l'affichage du texte decrypte
 			return		
 
 def caesar(plaintext,shift):
