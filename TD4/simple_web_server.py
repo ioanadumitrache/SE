@@ -59,22 +59,63 @@ class myHandler(BaseHTTPRequestHandler):
 				environ={'REQUEST_METHOD':'POST',
 		                 'CONTENT_TYPE':self.headers['Content-Type'],
 			})
-
-			self.nsa_queue.put(form["le_texte"].value[::-1])
+			crypt = caesar(form["le_texte"].value, 3)    #on cripte le message ecrit dans la page web
+			self.nsa_queue.put(crypt)		#on ajoute le message dan la file d'attente
 			print "Le texte en clair: %s" % form["le_texte"].value
 			self.send_response(200)
 			self.end_headers()
-			self.wfile.write(form["le_texte"].value[::-1])
+			self.wfile.write(crypt)
 			return			
 
 		if self.path=="/decrypt":
-			le_texte = self.nsa_queue.get()
+			le_texte = self.nsa_queue.get()			#on prend de la file d'attente le message decripte
+			decrypting = decrypt_caesar(le_texte, 3)	#on decripte le message initial
 			print "Le texte en encode: %s" % le_texte
 			self.send_response(200)
 			self.end_headers()
-			self.wfile.write("Le texte intercepte: %s." % le_texte)
-			self.wfile.write(" Le texte decode: %s" % le_texte[::-1])
-			return			
+			self.wfile.write("Le texte intercepte: %s." % le_texte)	#l'affichage du texte cripte
+			self.wfile.write(" Le texte decode: %s" % decrypting)	#l'affichage du texte decripte
+			return		
+
+def caesar(plaintext,shift):
+
+	alphabet=["a","b","c","d","e","f","g","h","i","j","k","l",
+	"m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+	#Create our substitution dictionary
+	dic={}
+	for i in range(0,len(alphabet)):
+		dic[alphabet[i]]=alphabet[(i+shift)%len(alphabet)]
+
+	#Convert each letter of plaintext to the corrsponding
+	#encrypted letter in our dictionary creating the cryptext
+	ciphertext=""
+	for l in plaintext.lower():
+		if l in dic:
+			l=dic[l]
+		ciphertext+=l
+
+	return ciphertext	
+
+def decrypt_caesar(plaintext,shift):
+
+	alphabet=["a","b","c","d","e","f","g","h","i","j","k","l",
+	"m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+	#Create our substitution dictionary
+	dic={}
+	for i in range(0,len(alphabet)):
+		dic[alphabet[i]]=alphabet[(i-shift)%len(alphabet)]
+
+	#Convert each letter of plaintext to the corrsponding
+	#encrypted letter in our dictionary creating the cryptext
+	ciphertext=""
+	for l in plaintext.lower():
+		if l in dic:
+			l=dic[l]
+		ciphertext+=l
+
+	return ciphertext	
 			
 try:
 	nsa_queue = Queue.Queue()
@@ -85,6 +126,10 @@ try:
 	#Create a web server and define the handler to manage the incoming request
 	server = HTTPServer(('', PORT_NUMBER), handler)
 	print 'Started httpserver on port ' , PORT_NUMBER
+	#c = caesar("hello", 3)
+	#print c
+	#d = decrypt_caesar("khoor",3)
+	#print d
 	#Wait forever for incoming http requests
 	server.serve_forever()
 
