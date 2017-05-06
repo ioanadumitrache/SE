@@ -21,10 +21,8 @@
     <script>
         side = "<i class='fa fa-rebel fa-3x' aria-hidden='true'></i>";
         //"<i class='fa fa-first-order fa-3x' aria-hidden='true'></i>"
-
         LOCK_TABLE = false;
         table = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
         function sendToServer() {
             $.ajax({
                     method: "POST",
@@ -40,12 +38,9 @@
                     $("#" + msg).html("<i class='fa fa-first-order fa-3x' aria-hidden='true'></i>");
                     LOCK_TABLE=false;
                 });
-
         }
-
         function checkCell(id) {
             if (LOCK_TABLE) return;
-
             if ($("#" + id).hasClass("active")) {
                 console.log("Cell already taken!");
             } else {
@@ -56,8 +51,6 @@
                 LOCK_TABLE = true;
             }
         }
-
-
     </script>
 
 </head>
@@ -66,7 +59,7 @@
     <div class="container">
         <h1>Star Wars</h1>
         <blockquote class="blockquote-reverse">
-            Choose your side must!
+            Choose your side, you must!
             <footer>Master Yoda</footer>
         </blockquote>
         <div class="row">
